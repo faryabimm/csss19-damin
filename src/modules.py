@@ -1,4 +1,4 @@
-import logger
+from src import logger
 import pandas as pd
 from typing import List
 import plotly.express as px
