@@ -7,11 +7,21 @@ import plotly.figure_factory as ff
 
 
 def show_columns(df: pd.DataFrame):
+    """
+    :param df: Data Set
+    :return List of columns:
+    """
     out = [i for i in df.columns]
     return out
 
 
 def select_columns(df: pd.DataFrame, columns: List[str], criteria: str = None) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param columns: List of strings like: ['column1', 'column2']
+    :param criteria: python condition like: 'column1 == "Value"'
+    :return: new Data Set
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     columns = [x for x in columns if x in df.columns]
@@ -19,11 +29,22 @@ def select_columns(df: pd.DataFrame, columns: List[str], criteria: str = None) -
 
 
 def drop_columns(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param columns: List of strings like: ['column1', 'column2']
+    :return: new Data Set
+    """
     columns = [x for x in columns if x in df.columns]
     return df.copy().drop(columns=columns)
 
 
 def fill_na_values(df: pd.DataFrame, columns='all', value=0) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param columns: default: "all"
+    :param value: replace value default: 0
+    :return: new Data Set
+    """
     df_copy = df.copy()
     if columns is 'all':
         df_copy = df_copy.fillna(value)
@@ -37,6 +58,11 @@ def fill_na_values(df: pd.DataFrame, columns='all', value=0) -> pd.DataFrame:
 
 
 def drop_na(df: pd.DataFrame, columns='all') -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param columns: default : "all"
+    :return: new Data Set
+    """
     df_copy = df.copy()
     if columns is 'all':
         columns = df.columns
@@ -49,6 +75,15 @@ def drop_na(df: pd.DataFrame, columns='all') -> pd.DataFrame:
 
 
 def summarize(df: pd.DataFrame, groupby_columns: List[str], aggregate_functions: List[str]) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param groupby_columns: list of columns like: ['column1', 'column2'] (can't be empty)
+    :param aggregate_functions: list of columns and functions to apply on dataset
+    Valid functions are:
+    'min' -> minimum | 'sum' -> summation | 'count' -> count | 'mean' -> average
+    'max' -> maximum | 'median' -> median | 'var' -> variance| 'std' ->
+    :return: new Data Set
+    """
     for item in groupby_columns:
         if item not in df.columns:
             print('no such column ' + item)
@@ -73,6 +108,11 @@ def summarize(df: pd.DataFrame, groupby_columns: List[str], aggregate_functions:
 
 
 def filter_records(df: pd.DataFrame, criteria: str) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param criteria: python condition
+    :return: new Data Set
+    """
     try:
         result = df[df.eval(criteria)]
         return result
@@ -82,6 +122,15 @@ def filter_records(df: pd.DataFrame, criteria: str) -> pd.DataFrame:
 
 
 def plot_2d(df: pd.DataFrame, x: str, y: str, color: str = None, trendline: bool = False, criteria: str = None) -> go.Figure:
+    """
+    :param df: Data set
+    :param x: name of column X
+    :param y: name of column Y
+    :param color: name of grouping column
+    :param trendline: True or False
+    :param criteria: python condition
+    :return: plot figure
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     if not x in df.columns:
@@ -99,6 +148,15 @@ def plot_2d(df: pd.DataFrame, x: str, y: str, color: str = None, trendline: bool
 
 
 def plot_3d(df: pd.DataFrame, x: str, y: str, z: str, color: str = None, criteria: str = None) -> go.Figure:
+    """
+    :param df: Data Set
+    :param x: name of column X
+    :param y: name of column Y
+    :param z: name of column Z
+    :param color: name of grouping column
+    :param criteria: python condition
+    :return: plot figure
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     if color is None and not pd.Series([x, y, z]).isin(df.columns).all() or \
@@ -109,6 +167,13 @@ def plot_3d(df: pd.DataFrame, x: str, y: str, z: str, color: str = None, criteri
 
 
 def histogram(df: pd.DataFrame, x: str, bins: int = 30, criteria: str = None) -> go.Figure:
+    """
+    :param df: Data Set
+    :param x: column name for plotting (must be numeric)
+    :param bins: data bins
+    :param criteria: python condition
+    :return: histogram figure
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     if x not in df.columns:
@@ -118,12 +183,27 @@ def histogram(df: pd.DataFrame, x: str, bins: int = 30, criteria: str = None) ->
 
 
 def density(df: pd.DataFrame, columns: List[str], bin_size: int = .2, criteria: str = None) -> go.Figure:
+    """
+    :param df: Data Set
+    :param columns: List of column like: ['column1', 'column2']
+    :param bin_size: bin_size
+    :param criteria: python condition
+    :return: density figure
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     return ff.create_distplot([df[i] for i in columns if i in df.columns], [i for i in columns if i in df.columns], bin_size=bin_size, curve_type="kde")
 
 
 def bar_chart(df: pd.DataFrame, x: str, y: str, color: str = None, criteria: str = None) -> go.Figure:
+    """
+    :param df: Data Set
+    :param x: name of column X
+    :param y: name of column Y
+    :param color: grouping column name
+    :param criteria: python condition
+    :return: chart figure
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     if not pd.Series([x, y]).isin(df.columns).all():
@@ -133,6 +213,13 @@ def bar_chart(df: pd.DataFrame, x: str, y: str, color: str = None, criteria: str
 
 
 def pie_chart(df: pd.DataFrame, r: str, theta: str, criteria: str = None) -> go.Figure:
+    """
+    :param df:
+    :param r:
+    :param theta:
+    :param criteria:
+    :return:
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     if not pd.Series([theta, r]).isin(df.columns).all():
@@ -142,6 +229,13 @@ def pie_chart(df: pd.DataFrame, r: str, theta: str, criteria: str = None) -> go.
 
 
 def heatmap(df: pd.DataFrame, x: str, y: str, criteria: str = None) -> go.Figure:
+    """
+    :param df:
+    :param x:
+    :param y:
+    :param criteria:
+    :return:
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     if not x in df.columns:
@@ -154,6 +248,13 @@ def heatmap(df: pd.DataFrame, x: str, y: str, criteria: str = None) -> go.Figure
 
 
 def view(df: pd.DataFrame, start: int = None, end: int = None, criteria: str = None) -> pd.DataFrame:
+    """
+    :param df:
+    :param start:
+    :param end:
+    :param criteria:
+    :return:
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     #     qgrid.show_grid(df[start:end])
@@ -161,6 +262,12 @@ def view(df: pd.DataFrame, start: int = None, end: int = None, criteria: str = N
 
 
 def head(df: pd.DataFrame, count: int = 5, criteria: str = None) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param count: number of data
+    :param criteria: python condition
+    :return: new Data Set
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     #     qgrid.show_grid(df[:count])
@@ -168,6 +275,12 @@ def head(df: pd.DataFrame, count: int = 5, criteria: str = None) -> pd.DataFrame
 
 
 def tail(df: pd.DataFrame, count: int = 5, criteria: str = None) -> pd.DataFrame:
+    """
+        :param df: Data Set
+        :param count: number of data
+        :param criteria: python condition
+        :return: new Data Set
+        """
     if criteria is not None:
         df = filter_records(df, criteria)
     #     qgrid.show_grid(df[count:])
@@ -175,6 +288,12 @@ def tail(df: pd.DataFrame, count: int = 5, criteria: str = None) -> pd.DataFrame
 
 
 def max_record(df: pd.DataFrame, column: str, criteria: str = None) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param column: selected column
+    :param criteria: python condition
+    :return: maximum value
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     if not column in df.columns:
@@ -184,21 +303,41 @@ def max_record(df: pd.DataFrame, column: str, criteria: str = None) -> pd.DataFr
 
 
 def min_record(df: pd.DataFrame, column: str, criteria: str = None) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param column: selected column
+    :param criteria: python condition
+    :return: minimum value
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
-    if not column in df.columns:
+    if column not in df.columns:
         print('no such column ' + column)
         return
     return df[df[column] == min(df[column])]
 
 
 def sort(df: pd.DataFrame, columns: List[str], ascending: bool, criteria: str = None) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param columns: List of columns like: ['column1', 'column2']
+    :param ascending: True or False
+    :param criteria: python condition
+    :return: sorted Data Set
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     return df.sort_values(by=columns, ascending=ascending)
 
 
 def box_plot(df: pd.DataFrame, x: str, y: str, criteria: str = None) -> go.Figure:
+    """
+    :param df: Data Set
+    :param x: name of column X
+    :param y: name of column Y
+    :param criteria: python condition
+    :return: plot figure
+    """
     if criteria is not None:
         df = filter_records(df, criteria)
     if not pd.Series([x, y]).isin(df.columns).all():
@@ -208,6 +347,11 @@ def box_plot(df: pd.DataFrame, x: str, y: str, criteria: str = None) -> go.Figur
 
 
 def unique_records(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param columns: List of columns like: ['column1', 'column2']
+    :return: new Data Set
+    """
     for item in columns:
         if item not in df.columns:
             print('no such column ' + item)
@@ -215,8 +359,14 @@ def unique_records(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
     return df.drop_duplicates(columns)
 
 
-def agg(df: pd.DataFrame, column: str, function:str):
-    if not column in df.columns:
+def agg(df: pd.DataFrame, column: str, function: str):
+    """
+    :param df: Data Set
+    :param column: name of selected column
+    :param function: valid function: 'mean' -> average | 'max' -> maximum | 'min' -> minimum
+    :return: single data
+    """
+    if column not in df.columns:
         print('no such column ' + column)
         return
     if function == 'mean':
@@ -230,7 +380,25 @@ def agg(df: pd.DataFrame, column: str, function:str):
         return
 
 
-def tokenize(f):
+def apply(df: pd.DataFrame, new_col: str,  formula: str) -> pd.DataFrame:
+    """
+    :param df: Data Set
+    :param new_col: name of new column
+    :param formula: formula to calculate data using other columns like:
+    column1 / 10 + column2 * 2
+    :return: new data set with new column
+    """
+    new_df = df.copy()
+    tokens = __tokenize(formula)
+    for t in tokens:
+        if t[1] is 'operand':
+            if not t[0].isdigit() and '.' not in t[0]:
+                formula = formula.replace(t[0], 'df[\'' + t[0] + '\']')
+    new_df[new_col] = eval(formula)
+    return new_df
+
+
+def __tokenize(f):
     symbols = ['(', ')', '=', '+', '-', '*', '/', '%', '^', '==', '<=', '>=', '>', '<', '<>', '!=']
     f = f.replace(' ', '')
     tokens = []
@@ -253,14 +421,3 @@ def tokenize(f):
         tokens.append((token, 'operand'))
 
     return tokens
-
-
-def apply(df: pd.DataFrame, new_col: str,  formula: str) -> pd.DataFrame:
-    new_df = df.copy()
-    tokens = tokenize(formula)
-    for t in tokens:
-        if t[1] is 'operand':
-            if not t[0].isdigit() and '.' not in t[0]:
-                formula = formula.replace(t[0], 'df[\'' + t[0] + '\']')
-    new_df[new_col] = eval(formula)
-    return new_df
