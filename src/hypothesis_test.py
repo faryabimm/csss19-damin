@@ -15,7 +15,9 @@ def random_grouping(df, group, info):
     print("mean of group1: "+ str(mean(data[0:number])))
     print("mean of group2: " + str(mean(data[number:])))
     new_data = pd.DataFrame({"Smokes": data, "group": sickness})
-    fig = px.box(new_data, x="group", y="Smokes", points="all")
+    fig = px.scatter(new_data, x="group", y="Smokes", color='group')
+    fig.add_scatter(x=['group1', 'group2'], y=[mean(data[:number]),mean(data[:number])], mode='lines', name= 'mean of group1', marker={'color':'Blue'})
+    fig.add_scatter(x=['group1', 'group2'], y=[mean(data[number:]), mean(data[number:])], mode='lines', name='mean of group2', marker={'color':'red'})
     fig.show()
 
 
