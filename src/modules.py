@@ -284,7 +284,7 @@ def tail(df: pd.DataFrame, count: int = 5, criteria: str = None) -> pd.DataFrame
     if criteria is not None:
         df = filter_records(df, criteria)
     #     qgrid.show_grid(df[count:])
-    return df[count:]
+    return df[-count:]
 
 
 def max_record(df: pd.DataFrame, column: str, criteria: str = None) -> pd.DataFrame:
