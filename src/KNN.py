@@ -3,7 +3,7 @@ from sklearn.neighbors import KNeighborsClassifier
 import pandas as pd
 
 
-def KNN_classifier(df, k, target, train_attr):
+def KNN_classifier(df, k, train_attr, target):
     x_train, x_test, y_train, y_test =  train_test_split(df[train_attr],
                                                         df[target], random_state=0, test_size=0.05)
     print("X_train shape: {}\ny_train shape: {}".format(x_train.shape, y_train.shape))
