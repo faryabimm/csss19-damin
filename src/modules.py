@@ -146,6 +146,28 @@ def plot_2d(df: pd.DataFrame, x: str, y: str, color: str = None, trendline: bool
         trendline = 'ols'
     return px.scatter(df, x=x, y=y, color=color, trendline=trendline)
 
+def plot_2d_line(df: pd.DataFrame, x: str, y: str, color: str = None, criteria: str = None) -> go.Figure:
+    """
+    :param df: Data set
+    :param x: name of column X
+    :param y: name of column Y
+    :param color: name of grouping column
+    :param criteria: python condition
+    :return: plot figure
+    """
+    if criteria is not None:
+        df = filter_records(df, criteria)
+    if not x in df.columns:
+        logger.log_error('x not found in columns')
+        return
+    if not y in df.columns:
+        logger.log_error('y not found in columns')
+        return
+    if not color in df.columns and not color is None:
+        logger.log_warn('color column not found')
+        color = None
+    return px.line(df, x=x, y=y, color=color)
+
 
 def plot_3d(df: pd.DataFrame, x: str, y: str, z: str, color: str = None, criteria: str = None) -> go.Figure:
     """
